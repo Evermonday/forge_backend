@@ -17,6 +17,7 @@ class AuthController extends Controller
         ]);
         
         $user = User::create($fields);
+        event(new \Illuminate\Auth\Events\Registered($user));
         
         $token = $user->createToken($user->name);
         
