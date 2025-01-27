@@ -24,7 +24,7 @@ class ScenarioController extends Controller
         $scenario = new Scenario();
         $scenario->name = $request->name;
         $scenario->note = $request->note;
-        $scenario->tag_id = $request->scenarioStatusTag['id'];
+        $scenario->tag_id = $request->tag_id;
         $scenario->developmentType = $request->developmentType;
         $scenario->developmentStrategy = $request->developmentStrategy;
         $scenario->unitType = $request->unitType;
