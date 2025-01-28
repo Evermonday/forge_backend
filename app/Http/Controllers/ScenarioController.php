@@ -22,7 +22,7 @@ class ScenarioController extends Controller
     public function fromScratch()
     {
         $scenario = new Scenario();
-        $scenario->name = 'Scenario';
+        $scenario->name = 'New Scenario';
         $scenario->note = '';
         $scenario->tag_id = Auth::user()->tags[0]->id;
         $scenario->developmentType = Scenario::DEVELOPMENT_TYPES[0];
