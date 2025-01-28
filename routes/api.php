@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ScenarioController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\TaskController;
 use App\Models\Scenario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,7 +25,7 @@ Route::put('/scenario/{scenario}', [ScenarioController::class, 'update'])
 
 Route::get('/scenario', [ScenarioController::class, 'index'])
     ->middleware('auth:sanctum');
-Route::post('/scenario', [ScenarioController::class, 'store'])
+Route::post('/scenario', [ScenarioController::class, 'fromScratch'])
     ->middleware('auth:sanctum');
 
 # Tag
