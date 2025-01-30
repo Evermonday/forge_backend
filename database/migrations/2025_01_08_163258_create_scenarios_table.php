@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('tag_id');
+            $table->unsignedBigInteger('project_id');
+
             $table->string('name');
             $table->string('note')->nullable();
             $table->enum('developmentType', ['New Construction', 'Renovation/Remodeling', 'Repair/Maintenance', 'Other']);
@@ -41,11 +43,14 @@ return new class extends Migration
                 ->foreign('user_id')
                 ->references('id')
                 ->on('users');
-
             $table
                 ->foreign('tag_id')
                 ->references('id')
                 ->on('tags');
+            $table
+                ->foreign('project_id')
+                ->references('id')
+                ->on('projects');
         });
     }
 
