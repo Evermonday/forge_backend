@@ -244,6 +244,8 @@ class ScenarioController extends Controller
         
         #TODO: Rewrite as validation
         $totalGFA = $request->residentialGFANumber + $scenario->commercialGFANumber;
+        $totalGFA = round($totalGFA, 2);
+
         if($totalGFA > $scenario->gfa)
         {
             throw ValidationException::withMessages(['residentialGFANumber' => "Must Not Exceed GFA."]);
@@ -264,6 +266,7 @@ class ScenarioController extends Controller
         
         #TODO: Rewrite as validation
         $totalGFAPercentage = $request->residentialGFAPercentage + $scenario->commercialGFAPercentage;
+        $totalGFAPercentage = round($totalGFAPercentage, 2);
 
         if ($totalGFAPercentage > 100)
         {
@@ -285,6 +288,8 @@ class ScenarioController extends Controller
         
         #TODO: Rewrite as validation
         $totalGFA = $request->commercialGFANumber + $scenario->residentialGFANumber;
+        $totalGFA = round($totalGFA, 2);
+
         if($totalGFA > $scenario->gfa)
         {
             throw ValidationException::withMessages(['commercialGFANumber' => "Must Not Exceed GFA."]);
@@ -305,6 +310,7 @@ class ScenarioController extends Controller
         
         #TODO: Rewrite as validation
         $totalGFAPercentage = $request->commercialGFAPercentage + $scenario->residentialGFAPercentage;
+        $totalGFAPercentage = round($totalGFAPercentage, 2);
 
         if ($totalGFAPercentage > 100)
         {
@@ -356,8 +362,10 @@ class ScenarioController extends Controller
     public function residentialNFAPercentage(Request $request, Scenario $scenario)
     {
         $validated = $request->validate([ 'residentialNFAPercentage' => 'required|integer|max:100' ]);
-        
-        $scenario->residentialNFAPercentage = $validated['residentialNFAPercentage'];
+        $residentialNFAPercentage = $validated['residentialNFAPercentage'];
+        $residentialNFAPercentage = round($residentialNFAPercentage, 2);
+
+        $scenario->residentialNFAPercentage = $residentialNFAPercentage;
         $scenario->save();
 
         event(new ResidentialNFAPercentageUpdated($scenario));
@@ -388,8 +396,10 @@ class ScenarioController extends Controller
     public function commercialNFAPercentage(Request $request, Scenario $scenario)
     {
         $validated = $request->validate([ 'commercialNFAPercentage' => 'required|integer|max:100' ]);
-        
-        $scenario->commercialNFAPercentage = $validated['commercialNFAPercentage'];
+        $commercialNFAPercentage = $validated['commercialNFAPercentage'];
+        $commercialNFAPercentage = round($commercialNFAPercentage, 2);
+
+        $scenario->commercialNFAPercentage = $commercialNFAPercentage;
         $scenario->save();
 
         event(new CommercialNFAPercentageUpdated($scenario));
