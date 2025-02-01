@@ -375,9 +375,9 @@ class ScenarioController extends Controller
         }
 
         #TODO: Rewrite as validation
-        if($scenario->areaAllocMethod != Scenario::AREA_ALLOC_METHOD_MANUAL)
+        if($scenario->nfaAreaAllocMethod != Scenario::AREA_ALLOC_METHOD_MANUAL)
         {
-            throw ValidationException::withMessages(['residentialGFANumber' => "Incompatible Area Allocation Method."]);
+            throw ValidationException::withMessages(['residentialGFANumber' => "Incompatible NFA Area Allocation Method."]);
         }
 
         $scenario->residentialNFANumber = $validated['residentialNFANumber'];
@@ -397,9 +397,9 @@ class ScenarioController extends Controller
 
 
         #TODO: Rewrite as validation
-        if($scenario->areaAllocMethod != Scenario::AREA_ALLOC_METHOD_PERCENTILE)
+        if($scenario->nfaAreaAllocMethod != Scenario::AREA_ALLOC_METHOD_PERCENTILE)
         {
-            throw ValidationException::withMessages(['residentialGFANumber' => "Incompatible Area Allocation Method."]);
+            throw ValidationException::withMessages(['residentialGFANumber' => "Incompatible NFA Area Allocation Method."]);
         }
 
         $scenario->residentialNFAPercentage = $residentialNFAPercentage;
@@ -422,9 +422,9 @@ class ScenarioController extends Controller
         }
 
         #TODO: Rewrite as validation
-        if($scenario->areaAllocMethod != Scenario::AREA_ALLOC_METHOD_MANUAL)
+        if($scenario->nfaAreaAllocMethod != Scenario::AREA_ALLOC_METHOD_MANUAL)
         {
-            throw ValidationException::withMessages(['residentialGFANumber' => "Incompatible Area Allocation Method."]);
+            throw ValidationException::withMessages(['residentialGFANumber' => "Incompatible NFA Area Allocation Method."]);
         }
 
         $scenario->commercialNFANumber = $validated['commercialNFANumber'];
@@ -443,9 +443,9 @@ class ScenarioController extends Controller
         $commercialNFAPercentage = round($commercialNFAPercentage, 2);
 
         #TODO: Rewrite as validation
-        if($scenario->areaAllocMethod != Scenario::AREA_ALLOC_METHOD_PERCENTILE)
+        if($scenario->nfaAreaAllocMethod != Scenario::AREA_ALLOC_METHOD_PERCENTILE)
         {
-            throw ValidationException::withMessages(['residentialGFANumber' => "Incompatible Area Allocation Method."]);
+            throw ValidationException::withMessages(['residentialGFANumber' => "Incompatible NFA Area Allocation Method."]);
         }
 
         $scenario->commercialNFAPercentage = $commercialNFAPercentage;

@@ -25,12 +25,6 @@ class ComputeGFA
     public function handle(FSIUpdated $event): void
     {
         $scenario = $event->scenario;
-        // Only calculate FSI if method is FSI-Based
-        if($scenario->gfaCalcMethod != Scenario::GFA_CALC_METHOD_FSI_BASED)
-        {
-            return;
-        }
-
         $project = $scenario->project;
         $scenario->gfa = $scenario->fsi * $project->landArea;
 

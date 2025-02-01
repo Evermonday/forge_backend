@@ -2,7 +2,9 @@
 
 namespace App\Listeners;
 
+use App\Events\CommercialGFANumberUpdated;
 use App\Events\EndUseUpdated;
+use App\Events\ResidentialGFANumberUpdated;
 use App\Models\Scenario;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -32,12 +34,14 @@ class DivvyUpGFAValues
             $commercialGFAPercentage = $scenario->gfa == 0 ? 0 : ($commercialGFANumber / $scenario->gfa) * 100;
                         
             $scenario->residentialGFANumber = 0;
-            $scenario->residentialGFAPercentage = 0;
+            // $scenario->residentialGFAPercentage = 0;
             $scenario->commercialGFANumber = $commercialGFANumber;
-            $scenario->commercialGFAPercentage = $commercialGFAPercentage;
+            // $scenario->commercialGFAPercentage = $commercialGFAPercentage;
             
             $scenario->save();
 
+            event(new ResidentialGFANumberUpdated($scenario));
+            event(new CommercialGFANumberUpdated($scenario));
             
             
             $commercialNFANumber = $scenario->commercialNFANumber + $scenario->residentialNFANumber;
@@ -59,10 +63,15 @@ class DivvyUpGFAValues
             $residentialGFAPercentage = $scenario->gfa == 0 ? 0 : ($residentialGFANumber / $scenario->gfa) * 100;
             
             $scenario->commercialGFANumber = 0;
-            $scenario->commercialGFAPercentage = 0;
+            // $scenario->commercialGFAPercentage = 0;
             $scenario->residentialGFANumber = $residentialGFANumber;
-            $scenario->residentialGFAPercentage = $residentialGFAPercentage;
+            // $scenario->residentialGFAPercentage = $residentialGFAPercentage;
+            
+            $scenario->save();
 
+            event(new ResidentialGFANumberUpdated($scenario));
+            event(new CommercialGFANumberUpdated($scenario));
+            
 
             $residentialNFANumber = $scenario->commercialNFANumber + $scenario->residentialNFANumber;
             $residentialNFAPercentage = $scenario->residentialGFANumber == 0 ? 0 : ($scenario->residentialNFANumber / $scenario->residentialGFANumber) * 100;
@@ -72,7 +81,6 @@ class DivvyUpGFAValues
             $scenario->residentialNFANumber = $residentialNFANumber;
             $scenario->residentialNFAPercentage = $residentialNFAPercentage;
 
-            $scenario->save();
 
             //FIXME: SAME AS ABOVE: should all of the changes above emit their corresponding events?
             // event(new \App\Events\ResidentialGFANumberUpdated($scenario));
