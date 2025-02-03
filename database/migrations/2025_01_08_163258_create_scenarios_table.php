@@ -36,6 +36,7 @@ return new class extends Migration
             $table->unsignedSmallInteger('residentialNFAPercentage');
             $table->unsignedMediumInteger('commercialNFANumber');
             $table->unsignedSmallInteger('commercialNFAPercentage');
+            $table->date('startDate');
             $table->timestamps();
 
             

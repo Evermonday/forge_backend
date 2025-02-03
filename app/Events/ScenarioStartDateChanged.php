@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Scenario;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -10,16 +11,18 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ProjectStartDateChanged
+class ScenarioStartDateChanged
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    public Scenario $scenario;
 
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct(Scenario $scenario)
     {
-        //
+        $this->scenario = $scenario;
     }
 
     /**

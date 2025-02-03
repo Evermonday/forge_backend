@@ -26,7 +26,7 @@ Route::get('/project', [ProjectController::class, 'index'])
 Route::put('/project/landArea', [ProjectController::class, 'updateLandArea'])
     ->middleware('auth:sanctum');
 
-# Scenario
+# Overview
 Route::get('/scenario/{scenario}', [ScenarioController::class, 'show'])
     ->middleware('auth:sanctum');
 // Route::put('/scenario/{scenario}', [ScenarioController::class, 'update'])
@@ -73,16 +73,27 @@ Route::put('/scenario/{scenario}/commercialNFANumber', [ScenarioController::clas
     ->middleware('auth:sanctum');
 Route::put('/scenario/{scenario}/commercialNFAPercentage', [ScenarioController::class, 'commercialNFAPercentage'])
     ->middleware('auth:sanctum');
+Route::put('/scenario/{scenario}/commercialNFAPercentage', [ScenarioController::class, 'commercialNFAPercentage'])
+    ->middleware('auth:sanctum');
 
 Route::get('/scenario', [ScenarioController::class, 'index'])
     ->middleware('auth:sanctum');
 Route::post('/scenario', [ScenarioController::class, 'fromScratch'])
     ->middleware('auth:sanctum');
 
-# Task
-Route::post('/scenario/{scenario}/task', [TaskController::class, 'store'])
+# Task-Related Scenario Actions
+Route::post('/scenario/{scenario}/task', [ScenarioController::class, 'createBlankTask'])
+    ->middleware('auth:sanctum');
+Route::put('/scenario/{scenario}/taskDisplayIds', [ScenarioController::class, 'updateTaskDisplayIds'])
     ->middleware('auth:sanctum');
 
+
+# Schedule
+Route::get('/scenario/{scenario}/task', [TaskController::class, 'index'])
+    ->middleware('auth:sanctum');
+
+Route::put('/scenario/{scenario}/startDate', [ScenarioController::class, 'updateStartDate'])
+    ->middleware('auth:sanctum');
 
 # Tag
 Route::get('/tag', [TagController::class, 'index'])

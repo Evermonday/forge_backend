@@ -17,11 +17,13 @@ use App\Events\FSIUpdated;
 use App\Events\GFACalcMethodUpdated;
 use App\Events\GFAUpdated;
 use App\Events\NFAAreaAllocMethodUpdated;
+use App\Events\ScenarioStartDateChanged;
 use App\Events\ResidentialGFANumberUpdated;
 use App\Events\ResidentialGFAPercentageUpdated;
 use App\Events\ResidentialNFANumberUpdated;
 use App\Events\ResidentialNFAPercentageUpdated;
 use App\Events\UnitTypeUpdated;
+use App\Models\Task;
 use Illuminate\Validation\ValidationException;
 
 class ScenarioController extends Controller
@@ -47,7 +49,7 @@ class ScenarioController extends Controller
         $scenario->developmentStrategy = Scenario::DEVELOPMENT_STRATEGIES[0];
         $scenario->unitType = Scenario::UNIT_TYPES[0];
         $scenario->endUse = Scenario::END_USES[0];
-        $scenario->fsi = 0;
+        $scenario->fsi = 1;
         $scenario->gfa = 0;
         $scenario->gfaCalcMethod = Scenario::GFA_CALC_METHODS[0];
         $scenario->areaAllocMethod = Scenario::AREA_ALLOC_METHODS[0];
@@ -60,6 +62,7 @@ class ScenarioController extends Controller
         $scenario->residentialNFAPercentage = 0;
         $scenario->commercialNFANumber = 0;
         $scenario->commercialNFAPercentage = 0;
+        $scenario->startDate = (new \Carbon\Carbon())->startOfMonth();
 
         $scenario->user_id = Auth::user()->id;
         $scenario->project_id = Auth::user()->project->id;
@@ -81,9 +84,14 @@ class ScenarioController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Scenario $scenario)
+    public function updatestartDate(Request $request, Scenario $scenario)
     {
-        //
+        $validated = $request->validate([ 'startDate' => 'required|date_format:Y-m-d' ]);
+
+        $scenario->startDate = $validated['startDate'];
+        $scenario->save();
+
+        event(new ScenarioStartDateChanged($scenario));
     }
 
     /**
@@ -460,5 +468,54 @@ class ScenarioController extends Controller
     public function destroy(Scenario $scenario)
     {
         //
+    }
+
+    /**
+     * Update all displayIds of the tasks belonging to a given scenario in storage.
+     */
+    public function updateTaskDisplayIds(Request $request, Scenario $scenario)
+    {
+        //TODO: validation
+
+        $newTaskDisplayIds = $request->taskIds;
+        return $newTaskDisplayIds;
+    }
+
+    /**
+     * Create a new blank task for the given scenario in storage.
+     */
+    public function createBlankTask(Request $request, Scenario $scenario)
+    {
+        // $validated = $request->validate(
+        //     [
+        //         'name'
+        //         'duration' => 'required|integer|max:1000'
+        //     ]);
+        # Validation
+        // if ($request->task->mode == Task::MODE_AUTO
+            // && $request->task->predecessor_id !== null)
+        // {
+            // throw ValidationException::withMessages(['predecessor_id' => "Incompatible Task Mode."]);
+        //}
+
+        $tasks = $scenario->tasks;
+
+        // get the largest displayId
+        $maxDisplayId = $tasks->max(fn($task) => $task->displayId);
+        $maxDisplayId++;
+        
+        $task = new Task();
+        $task->name = 'Default';
+        $task->mode = Task::MODE_MANUAL;
+        $task->duration = 2;
+        $task->startDate = $scenario->startDate;
+        $task->displayId = $maxDisplayId;
+        $task->scenario_id = $scenario->id;
+        $task->user_id = $scenario->user_id;
+        $task->save();
+        
+        $task->predecessors;
+
+        return $task;
     }
 }
