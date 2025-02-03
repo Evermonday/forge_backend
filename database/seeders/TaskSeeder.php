@@ -73,6 +73,7 @@ class TaskSeeder extends Seeder
             $taskC->mode = Task::MODE_MANUAL;
             $taskC->duration = $duration;
             $taskC->startDate = (new \Carbon\Carbon($scenario->start))
+                ->startOfMonth()
                 ->addMonths(rand(3, 7))
                 ->subDays(1);
             $taskC->displayId = $displayId;
