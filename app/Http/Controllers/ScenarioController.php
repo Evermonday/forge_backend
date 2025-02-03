@@ -17,7 +17,7 @@ use App\Events\FSIUpdated;
 use App\Events\GFACalcMethodUpdated;
 use App\Events\GFAUpdated;
 use App\Events\NFAAreaAllocMethodUpdated;
-use App\Events\ScenarioStartDateChanged;
+use App\Events\ScenarioStartDateUpdated;
 use App\Events\ResidentialGFANumberUpdated;
 use App\Events\ResidentialGFAPercentageUpdated;
 use App\Events\ResidentialNFANumberUpdated;
@@ -84,14 +84,14 @@ class ScenarioController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function updatestartDate(Request $request, Scenario $scenario)
+    public function updateStartDate(Request $request, Scenario $scenario)
     {
         $validated = $request->validate([ 'startDate' => 'required|date_format:Y-m-d' ]);
 
         $scenario->startDate = $validated['startDate'];
         $scenario->save();
 
-        event(new ScenarioStartDateChanged($scenario));
+        event(new ScenarioStartDateUpdated($scenario));
     }
 
     /**
