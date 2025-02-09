@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\ScenarioStartDateUpdated;
+use App\Events\TaskStartDateUpdated;
 use App\Models\Task;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -35,7 +36,7 @@ class MatchAutoNoPredTasksStartDateToScenarioStartDate
             $task->startDate = $scenario->startDate;
             $task->save();
 
-            // event(new TaskStartDateUpdated($task));
+            event(new TaskStartDateUpdated($task));
         });
     }
 }

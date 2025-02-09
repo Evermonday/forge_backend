@@ -51,9 +51,9 @@ class TaskSeeder extends Seeder
             $taskB->name = 'Task B';
             $taskB->mode = Task::MODE_AUTO;
             $taskB->duration = $duration;
-            $taskB->startDate = (new \Carbon\Carbon($taskA->endDate))
-                ->addMonths($taskB->duration)
-                ->subDay();
+            // $taskB->startDate = (new \Carbon\Carbon($taskA->endDate))
+            //     ->addMonths($taskB->duration);
+                // ->subDay();
             $taskB->displayId = $displayId;
 
             $taskB->scenario_id = $scenario->id;
@@ -74,8 +74,8 @@ class TaskSeeder extends Seeder
             $taskC->duration = $duration;
             $taskC->startDate = (new \Carbon\Carbon($scenario->start))
                 ->startOfMonth()
-                ->addMonths(rand(3, 7))
-                ->subDays(1);
+                ->addMonths(rand(3, 7));
+                // ->subDay();
             $taskC->displayId = $displayId;
 
             $taskC->scenario_id = $scenario->id;

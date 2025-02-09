@@ -94,6 +94,14 @@ Route::get('/scenario/{scenario}/task', [TaskController::class, 'index'])
 
 Route::put('/scenario/{scenario}/startDate', [ScenarioController::class, 'updateStartDate'])
     ->middleware('auth:sanctum');
+Route::put('/task/{task}/name', [TaskController::class, 'updateTaskName'])
+    ->middleware('auth:sanctum');
+Route::put('/task/{task}/mode', [TaskController::class, 'updateTaskMode'])
+    ->middleware('auth:sanctum');
+Route::put('/task/{task}/startDate', [TaskController::class, 'updateTaskStartDate'])
+    ->middleware('auth:sanctum');
+Route::put('/task/{task}/predecessors', [TaskController::class, 'updateTaskPredecessor'])
+    ->middleware('auth:sanctum');
 
 # Tag
 Route::get('/tag', [TagController::class, 'index'])
