@@ -80,8 +80,13 @@ class Task extends Model
         {
             return $this->attributes['startDate'];
         }
-        elseif (count($this->predecessors) === 0) {
+        elseif (count($this->predecessors) === 0
+            && !is_null($this->attributes['startDate'])) {
             return $this->attributes['startDate'];
+        }
+        elseif (count($this->predecessors) === 0
+            && is_null($this->attributes['startDate'])) {
+            return $this->scenario->startDate;
         }
         else
         {
@@ -144,7 +149,9 @@ class Task extends Model
         }
         else
         {
+            // MODE_AUTO
             $this->attributes['mode'] = $value;
+            $this->startDate = null;
         }
     }
 
