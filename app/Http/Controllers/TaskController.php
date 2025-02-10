@@ -71,8 +71,8 @@ class TaskController extends Controller
     {
         // $validated = $request->validate([ 'mode' => ['required', Rule::enum(TASK_MODE::class) ]]);
 
-        // $task->startDate = $request->startDate;
-        // $task->save();
+        $task->startDate = $request->startDate;
+        $task->save();
         return;
     }
 
