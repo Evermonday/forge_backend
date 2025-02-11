@@ -193,7 +193,9 @@ class Task extends Model
             return $this->attributes['startDate'];
         }
 
-        $outlastingRelative = $preds->sort(fn($pred) => $pred->endDate)[0];
+        $outlastingRelative = $preds
+            ->sort(fn($pred) => $pred->endDate)
+            ->first();
 
         return $outlastingRelative->endDate;
     }
