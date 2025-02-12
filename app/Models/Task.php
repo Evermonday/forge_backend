@@ -194,7 +194,7 @@ class Task extends Model
         }
 
         $outlastingRelative = $preds
-            ->sort(fn($pred) => $pred->endDate)
+            ->sortByDesc(fn($pred) => strtotime($pred->endDate))
             ->first();
 
         return $outlastingRelative->endDate;
