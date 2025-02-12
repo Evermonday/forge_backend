@@ -77,6 +77,18 @@ class TaskController extends Controller
     }
 
     /**
+     * Update the given task's duration in storage.
+     */
+    public function updateTaskDuration(Request $request, Task $task)
+    {
+        $validated = $request->validate([ 'duration' => 'required|integer|max:120' ]);
+
+        $task->duration = $validated['duration'];
+        $task->save();
+        return;
+    }
+
+    /**
      * Update the given task's startDate in storage.
      */
     public function updateTaskPredecessor(Request $request, Task $task)

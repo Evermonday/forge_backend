@@ -100,6 +100,8 @@ Route::put('/task/{task}/mode', [TaskController::class, 'updateTaskMode'])
     ->middleware('auth:sanctum');
 Route::put('/task/{task}/startDate', [TaskController::class, 'updateTaskStartDate'])
     ->middleware('auth:sanctum');
+Route::put('/task/{task}/duration', [TaskController::class, 'updateTaskDuration'])
+    ->middleware('auth:sanctum');
 Route::put('/task/{task}/predecessors', [TaskController::class, 'updateTaskPredecessor'])
     ->middleware('auth:sanctum');
 
