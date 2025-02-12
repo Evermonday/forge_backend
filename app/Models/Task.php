@@ -20,6 +20,10 @@ class Task extends Model
     const MODE_MANUAL = 'Manual';
 
 
+    const DEFAULT_NAME = 'New Task';
+    const DEFAULT_DURATION = 1;
+    const DEFAULT_MODE = self::MODE_AUTO;
+
     protected $appends = array('mode', 'startDate', 'endDate');
 
 

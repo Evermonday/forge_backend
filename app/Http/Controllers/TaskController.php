@@ -60,8 +60,28 @@ class TaskController extends Controller
     {
         // $validated = $request->validate([ 'mode' => ['required', Rule::enum(TASK_MODE::class) ]]);
 
-        $task->mode = $request->mode;
-        $task->save();
+        // Means task was manual and now is auto
+        if($task->mode != $request->mode
+            && $request->mode == Task::MODE_AUTO)
+        {
+            $task->mode = Task::MODE_AUTO;
+            $task->startDate = null;
+            $task->save();
+        }
+        elseif($task->mode != $request->mode
+            && $request->mode == Task::MODE_MANUAL)
+        {
+            $startDate = $task->startDate;
+
+            $task->predecessors()->detach();
+            $task = Task::find($task->id);
+
+            $task->mode = Task::MODE_MANUAL;
+            $task->startDate = $startDate;
+            $task->save();
+        }
+
+        // If mode isn't changed, don't do anything
     }
 
     /**
@@ -96,6 +116,11 @@ class TaskController extends Controller
         // $validated = $request->validate([ 'mode' => ['required', Rule::enum(TASK_MODE::class) ]]);
 
         //TODO: ensure that all task Ids belong to a scenario that the user has
+        if($task->mode != Task::MODE_AUTO)
+        {
+            throw new Exception('Incompatible Task Mode');
+        }
+
         $allScenarioTasks = $task->scenario->tasks;
         $requestedPredIds = collect($request->predecessors);
 

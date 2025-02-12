@@ -505,10 +505,9 @@ class ScenarioController extends Controller
         $maxDisplayId++;
         
         $task = new Task();
-        $task->name = 'Default';
-        $task->mode = Task::MODE_MANUAL;
-        $task->duration = 2;
-        $task->startDate = $scenario->startDate;
+        $task->name = Task::DEFAULT_NAME;
+        $task->mode = Task::DEFAULT_MODE;
+        $task->duration = Task::DEFAULT_DURATION;
         $task->displayId = $maxDisplayId;
         $task->scenario_id = $scenario->id;
         $task->user_id = $scenario->user_id;
