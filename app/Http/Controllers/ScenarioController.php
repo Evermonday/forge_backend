@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\AreaAllocMethodpdated;
+use App\Events\AreaAllocMethodUpdated;
 use App\Events\CommercialGFANumberUpdated;
 use App\Events\CommercialGFAPercentageUpdated;
 use App\Events\CommercialNFANumberUpdated;
@@ -240,7 +240,7 @@ class ScenarioController extends Controller
         $scenario->areaAllocMethod = $validated['areaAllocMethod'];
         $scenario->save();
 
-        event(new AreaAllocMethodpdated($scenario));
+        event(new AreaAllocMethodUpdated($scenario));
     }
 
     /**
@@ -504,15 +504,12 @@ class ScenarioController extends Controller
         $maxDisplayId = $tasks->max(fn($task) => $task->displayId);
         $maxDisplayId++;
         
-        $task = new Task();
-        $task->name = Task::DEFAULT_NAME;
-        $task->mode = Task::DEFAULT_MODE;
-        $task->duration = Task::DEFAULT_DURATION;
-        $task->displayId = $maxDisplayId;
-        $task->scenario_id = $scenario->id;
-        $task->user_id = $scenario->user_id;
-        $task->save();
-        
+        $task = Task::make(
+            scenario: $scenario,
+            name: Task::DEFAULT_NAME,
+            duration: Task::DEFAULT_DURATION,
+            displayId: $maxDisplayId
+        );
         $task->predecessors;
 
         return $task;

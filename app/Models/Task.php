@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\TaskModeEnum;
 use App\Exceptions\CyclicalTaskRelation;
 use App\Exceptions\IncompatibleTaskMode;
 use Carbon\Carbon;
@@ -22,11 +23,39 @@ class Task extends Model
 
     const DEFAULT_NAME = 'New Task';
     const DEFAULT_DURATION = 1;
-    const DEFAULT_MODE = self::MODE_AUTO;
+    const DEFAULT_MODE = TaskModeEnum::AUTO->value;
 
     protected $appends = array('mode', 'startDate', 'endDate');
 
 
+    /**
+     * Factory Method
+     * 
+     */
+    public static function make(
+        Scenario $scenario,
+        string $name,
+        int $duration,
+        int $displayId,
+        string $mode = TaskModeEnum::AUTO->value
+    ) : Task
+    {
+        $task = new Task();
+        $task->name = $name;
+        $task->mode = $mode;
+        $task->duration = $duration;
+        $task->displayId = $displayId;
+        $task->scenario_id = $scenario->id;
+        $task->user_id = $scenario->user_id;
+
+        // TODO: Move some of the checks that
+        // appen in model's method to here
+        $task->startDate = null;
+
+        $task->save();
+
+        return $task;
+    }
 
     /**
     * Get the scenario that this task belongs to.
@@ -73,23 +102,22 @@ class Task extends Model
     protected function getStartDateAttribute()
     {
         if(!array_key_exists('mode', $this->attributes)
-        || !array_key_exists('startDate', $this->attributes))
+            || !array_key_exists('startDate', $this->attributes))
         {
-            return (new \Carbon\Carbon())
-                ->addDay()
-                ->toDateString();
+            return null;
         }
-
-        if ($this->attributes['mode'] === self::MODE_MANUAL)
+        elseif ($this->attributes['mode'] === TaskModeEnum::MANUAL->value)
         {
             return $this->attributes['startDate'];
         }
+        // elseif (count($this->predecessors) === 0
+        //     && !is_null($this->attributes['startDate']))
+        // {
+        //     return $this->attributes['startDate'];
+        // }
         elseif (count($this->predecessors) === 0
-            && !is_null($this->attributes['startDate'])) {
-            return $this->attributes['startDate'];
-        }
-        elseif (count($this->predecessors) === 0
-            && is_null($this->attributes['startDate'])) {
+            && is_null($this->attributes['startDate']))
+        {
             return $this->scenario->startDate;
         }
         else
@@ -106,56 +134,58 @@ class Task extends Model
 
     protected function setStartDateAttribute($value)
     {
-        if(!array_key_exists('mode', $this->attributes))
+        if(!array_key_exists('mode', $this->attributes)
+            || $this->attributes['mode'] === TaskModeEnum::MANUAL->value)
         {
-            $this->attributes['startDate'] = (new \Carbon\Carbon())
-                ->addDay()
-                ->toDateString();
-            return;
+            $this->attributes['startDate'] = $value;
             // return $this->attributes['startDate'];
-        }
-
-        if ($this->attributes['mode'] === self::MODE_MANUAL)
-        {
-            $startDate = (new \Carbon\Carbon($value))
-                ->firstOfMonth()
-                ->toDateString();
+        // }
+        // elseif ($this->attributes['mode'] === TaskModeEnum::MANUAL->value)
+        // {
+        //     $startDate = (new \Carbon\Carbon($value))
+        //         ->firstOfMonth()
+        //         ->toDateString();
         
-            $this->attributes['startDate'] = $startDate;
+        //     $this->attributes['startDate'] = $startDate;
         }
-        elseif ($this->attributes['mode'] === self::MODE_AUTO
-            && count($this->predecessors) === 0)
+        // No need to check for mode because whete
+        elseif (is_null($value)
+        )
+            // && count($this->predecessors) === 0)
         {
+            $this->attributes['startDate'] = null;
             // An Auto Task with no preds uses
             // it's scenario's startDate
             // $this->attributes['startDate'] = $this->scenario->startDate;
                         
             //FIXME: for now, just accept the input
-            $startDate = (new \Carbon\Carbon($value))
-                ->firstOfMonth()
-                ->toDateString();
+            // $startDate = (new \Carbon\Carbon($value))
+            //     ->firstOfMonth()
+            //     ->toDateString();
         
-            $this->attributes['startDate'] = $startDate;
+            // $startDate = null;
+            // $this->attributes['startDate'] = $startDate;
 
         } else {
-
-            // if is AUTO and has preds, startDate can't be set
             throw new IncompatibleTaskMode();
         }
     }
 
     protected function setModeAttribute($value)
     {
-        if ($value === self::MODE_MANUAL
-            && count($this->predecessors) !== 0)
+        if ($value === TaskModeEnum::MANUAL->value)
         {
-            throw new IncompatibleTaskMode();
+            $this->attributes['mode'] = $value;
+            if(count($this->predecessors) === 0)
+            {
+                $this->predecessors()->detach();
+            }
         }
         else
         {
             // MODE_AUTO
             $this->attributes['mode'] = $value;
-            $this->startDate = null;
+            $this->attributes['startDate'] = null;
         }
     }
 
@@ -188,7 +218,7 @@ class Task extends Model
      */
     public function getOutlastingPredDate() : string
     {
-        if ($this->mode != self::MODE_AUTO) {
+        if ($this->mode != TaskModeEnum::AUTO->value) {
             throw new IncompatibleTaskMode();
         }
 
@@ -221,7 +251,7 @@ class Task extends Model
 
         foreach ($sucs as $suc)
         {
-            if ($suc->mode == self::MODE_AUTO)
+            if ($suc->mode == TaskModeEnum::AUTO->value)
             {
                 $searchResult = $this->lookForTargetInSucsRecursively($suc, $targetId);
                 if ($searchResult === 'Found')
@@ -243,7 +273,7 @@ class Task extends Model
         $sucs = $task->successors;
         foreach ($sucs as $suc)
         {
-            if ($suc->mode == self::MODE_AUTO)
+            if ($suc->mode == TaskModeEnum::AUTO->value)
             {
                 $searchResult = $this->lookForTargetInSucsRecursively($suc, $targetId);
                 if ($searchResult === 'Found')

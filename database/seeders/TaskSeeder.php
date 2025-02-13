@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\TaskModeEnum;
 use App\Models\Scenario;
 use App\Models\Task;
 use App\Models\User;
@@ -23,13 +24,21 @@ class TaskSeeder extends Seeder
             $duration = rand(1, 8);
 
             # TASK A
-            $taskA = new Task();
+            #TODO:
+            // $taskA = Task::make(
+            //     scenario: $scenario,
+            //     name: 'Task A',
+            //     duration: $duration,
+            //     displayId: $displayId
 
+            // );
+
+            $taskA = new Task();
             $taskA->name = 'Task A';
-            $taskA->mode = Task::MODE_AUTO;
+            $taskA->mode = TaskModeEnum::AUTO->value;
             $taskA->duration = $duration;
             // $taskA->startDate = (new \Carbon\Carbon())->startOfMonth();
-            $taskA->startDate = $scenario->startDate;
+            // $taskA->startDate = $scenario->startDate;
             // $taskA->endDate = (new \Carbon\Carbon($taskA->startDate))
             //     ->addMonths($taskA->duration)
             //     ->subDay();
@@ -49,7 +58,7 @@ class TaskSeeder extends Seeder
             $taskB = new Task();
 
             $taskB->name = 'Task B';
-            $taskB->mode = Task::MODE_AUTO;
+            $taskB->mode = TaskModeEnum::AUTO->value;
             $taskB->duration = $duration;
             // $taskB->startDate = (new \Carbon\Carbon($taskA->endDate))
             //     ->addMonths($taskB->duration);
@@ -65,12 +74,12 @@ class TaskSeeder extends Seeder
             $displayId++;
             $duration = rand(1, 8);
             
-            $taskB->predecessors()->save($taskA);
+            $taskB->savePredecessor($taskA);
 
             # TASK C
             $taskC = new Task();
             $taskC->name = 'Task C';
-            $taskC->mode = Task::MODE_MANUAL;
+            $taskC->mode = TaskModeEnum::MANUAL->value;
             $taskC->duration = $duration;
             $taskC->startDate = (new \Carbon\Carbon($scenario->start))
                 ->startOfMonth()

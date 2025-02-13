@@ -56,4 +56,12 @@ class Scenario extends Model
     {
         return $this->hasMany(Task::class);
     }
+
+    /**
+     * Get the tasks that owns this scenario.
+     */
+    public function rentalGroups(): HasMany
+    {
+        return $this->hasMany(RentalGroup::class);
+    }
 }

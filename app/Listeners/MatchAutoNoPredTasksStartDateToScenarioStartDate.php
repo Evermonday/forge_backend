@@ -23,20 +23,21 @@ class MatchAutoNoPredTasksStartDateToScenarioStartDate
      * of mode auto and have no predecessors (i.e. those which
      * are tied to the scenario start date).
      */
-    public function handle(ScenarioStartDateUpdated $event): void
+    public function handle(): void
+    // public function handle(ScenarioStartDateUpdated $event): void
     {
-        $scenario = $event->scenario;
+        // $scenario = $event->scenario;
 
-        $autoNoPredTasks = $scenario
-            ->tasks
-            ->filter(fn($task) => $task->mode == Task::MODE_AUTO && count($task->predecessors) == 0 );
+        // $autoNoPredTasks = $scenario
+        //     ->tasks
+        //     ->filter(fn($task) => $task->mode == Task::MODE_AUTO && count($task->predecessors) == 0 );
         
-        $autoNoPredTasks->each(function($task) use ($scenario)
-        {
-            $task->startDate = $scenario->startDate;
-            $task->save();
+        // $autoNoPredTasks->each(function($task) use ($scenario)
+        // {
+        //     $task->startDate = $scenario->startDate;
+        //     $task->save();
 
-            event(new TaskStartDateUpdated($task));
-        });
+        //     event(new TaskStartDateUpdated($task));
+        // });
     }
 }
